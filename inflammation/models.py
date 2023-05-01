@@ -83,5 +83,13 @@ def daily_std(data):
     return np.std(data, axis=0)
 
 
+def daily_above_threshold(patient_num, data, threshold):
+    """Determine whether or not each daily inflammation value exceeds a given threshold for a given patient.
 
-daily_above_threshold()
+    :param patient_num: The patient row number
+    :param data: A 2D data array with inflammation data
+    :param threshold: An inflammation threshold to check each daily value against
+    :returns: A boolean list representing whether or not each patient's daily inflammation exceeded the threshold
+    """
+    return list(map(lambda x: x > threshold, data[patient_num]))
+

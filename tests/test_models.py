@@ -47,7 +47,7 @@ def test_daily_min(test, expected):
         ([[0, 0, 0], [0, 0, 0], [0, 0, 0]], [[0, 0, 0], [0, 0, 0], [0, 0, 0]], None),
         ([[1, 1, 1], [1, 1, 1], [1, 1, 1]], [[1, 1, 1], [1, 1, 1], [1, 1, 1]], None),
         ([[float('nan'), 1, 1], [1, 1, 1], [1, 1, 1]], [[0, 1, 1], [1, 1, 1], [1, 1, 1]], None),
-        ([[-1, 2, 3], [4, 5, 6], [7, 8, 9]],[[0, 0.67, 1], [0.67, 0.83, 1], [0.78, 0.89, 1]], ValueError),
+        ([[-1, 2, 3], [4, 5, 6], [7, 8, 9]], [[0, 0.67, 1], [0.67, 0.83, 1], [0.78, 0.89, 1]], ValueError),
         ('hello', None, TypeError),
         (3, None, ValueError),
         ([[1, 2, 3], [4, 5, float('nan')], [7, 8, 9]], [[0.33, 0.67, 1], [0.8, 1, 0], [0.78, 0.89, 1]], None),
@@ -82,3 +82,16 @@ def test_daily_std(test, expected):
     """Test std function works for array of zeroes and positive integers."""
     from inflammation.models import daily_std
     npt.assert_array_almost_equal(daily_std(np.array(test)), np.array(expected), decimal=2)
+
+
+@pytest.mark.parametrize(
+    "test, expected, expect_raises",
+    [
+        ([[0, 0, 0, 0], [0, 0, 0, 0]], [False, False, False, False], None),
+        ([[1, 1, 2, 20], [0, 0, 0, 0]], [True, True, True, True], None),
+        ([[1, 0.3, 0, 4], [0, 0, 0, 0]], [True, False, False, True], None),
+    ])
+def test_daily_above_threshold(test, expected, expect_raises):
+    from inflammation.models import daily_above_threshold
+    npt.assert_array_equal(daily_above_threshold(0, test, 0.5), expected)
+
