@@ -68,6 +68,17 @@ def test_patient_normalise(test, expected, expect_raises):
 def test_daily_min_string():
     """Test for TypeError when passing strings"""
     from inflammation.models import daily_min
-
     with pytest.raises(TypeError):
         error_expected = daily_min([['Hello', 'there'], ['General', 'Kenobi']])
+
+
+@pytest.mark.parametrize(
+    "test, expected",
+    [
+        ([[0, 0], [0, 0], [0, 0]], [0, 0]),
+        ([[1, 1], [2, 20], [1, 1], [2, 20]], [0.5, 9.5])
+    ])
+def test_daily_std(test, expected):
+    """Test std function works for array of zeroes and positive integers."""
+    from inflammation.models import daily_std
+    npt.assert_array_almost_equal(daily_std(np.array(test)), np.array(expected), decimal=2)
