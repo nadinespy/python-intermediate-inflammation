@@ -87,9 +87,9 @@ def test_daily_std(test, expected):
 @pytest.mark.parametrize(
     "test, expected, expect_raises",
     [
-        ([[0, 0, 0, 0], [0, 0, 0, 0]], [False, False, False, False], None),
-        ([[1, 1, 2, 20], [0, 0, 0, 0]], [True, True, True, True], None),
-        ([[1, 0.3, 0, 4], [0, 0, 0, 0]], [True, False, False, True], None),
+        ([[0, 0, 0, 0], [0, 0, 0, 0]], 0, None),
+        ([[1, 1, 2, 20], [0, 0, 0, 0]], 4, None),
+        ([[1, 0.3, 0, 4], [0, 0, 0, 0]], 2, None),
     ])
 def test_daily_above_threshold(test, expected, expect_raises):
     from inflammation.models import daily_above_threshold
