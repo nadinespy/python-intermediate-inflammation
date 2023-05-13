@@ -94,5 +94,73 @@ def daily_above_threshold(patient_num, data, threshold):
     above_threshold_array = list(map(lambda x: x > threshold, data[patient_num]))
     return reduce(lambda a, b: a + b, above_threshold_array, 0)
 
-    #return list(map(lambda x: x > threshold, data[patient_num]))
+def attach_names(data, names):
+    """Create datastructure containing patient records.
 
+    :param data: A 2D data array with inflammation data
+    :param names: A list of strings
+    :returns: A dictionary with name and data corresponding to that person
+    """
+    assert len(data) == len(names)
+    return [{'name': name, 'data': data_row} for name, data_row in zip(names, data)]
+
+
+def create_patient(data, names):
+    data_temp = attach_names(data, names)
+
+
+
+class Observation:
+    def __init__(self, day, value):
+        self.day = day
+        self.value = value
+
+    def __str__(self):
+        return str(self.value)
+
+class Person:
+    def __init__(self, name):
+        self.name = name
+
+    def __str__(self):
+        return self.name
+
+class Patient(Person):
+    """A patient in an inflammation study."""
+
+    def __init__(self, name):
+        super().__init__(name)
+        self.observations = []
+
+    def add_observation(self, value, day=None):
+        if day is None:
+            try:
+                day = self.observations[-1].day + 1
+
+            except IndexError:
+                day = 0
+
+        new_observation = Observation(day, value)
+
+        self.observations.append(new_observation)
+        return new_observation
+
+    def __str__(self):
+        return {'name': self.name, 'observations': self.observations}
+
+class Doctor(Person):
+    """A doctor in an inflammation study."""
+    def __init__(self, name):
+        super().__init__(name)
+        self.patients = []
+
+    def add_patient(self, new_patient):
+        # A crude check by name if this patient is already looked after
+        # by this doctor before adding them
+        for patient in self.patients:
+            if patient.name == new_patient.name:
+                return
+        self.patients.append(new_patient)
+
+    def __str__(self):
+        return {'name': self.name, 'patients': self.patients}
